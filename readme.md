@@ -1,11 +1,16 @@
-#PDF Files Merger
-##Requirements :
+# PDF Files Merger  
+
+## Requirements :  
+
 - Java 11 installed  
 You can check your java by opening your command line and type `java -v`, you should see in the output `java 11`  
 
-##Usage
+## Usage
+
 `java -jar pdf-files-merger.jar ./files ./out.pdf`
-##Docs
+
+## Docs
+
 ```
 private static void showHelp() {
         System.out.println("Usage :");
