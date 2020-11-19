@@ -7,10 +7,7 @@ import com.itextpdf.text.pdf.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -23,20 +20,21 @@ public class Main {
         try {
             run(args[0], args[1]);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+            System.out.println("-".repeat(100));
             showHelp();
         }
     }
 
     private static void showHelp() {
         System.out.println("Usage :");
-        System.out.println("java -jar program.jar  dirPath outFilePath");
-        System.out.println("dirPath : path to the directory containing PDF files to be merged in one PDF file");
-        System.out.println("outFilePath : path to the file on which the merged PDFs will be saved. Should ends with .pdf suffix");
+        System.out.println("java -jar program.jar  inDirPath outDirPath");
+        System.out.println("inDirPath : path to the directory containing PDF files to be merged in one PDF file");
+        System.out.println("outDirPath : path to the output directory on which the merged PDFs will be saved.");
         System.out.println("Thanks !");
     }
 
-    private static void run(String inFolderPath, String outFilePath) throws Exception {
+    private static void run(String inFolderPath, String outDirPath) throws Exception {
         System.out.println("Begin");
         Objects.requireNonNull(inFolderPath, "Folder path should be not null");
         File directory = new File(inFolderPath);
@@ -46,25 +44,24 @@ public class Main {
             throw new IllegalArgumentException("You should specify a folder path");
 
         List<File> files = loadFiles(directory);
-        mergeFiles(files, outFilePath);
+        System.out.println(files.size() + " files found");
+        mergeFiles(files, outDirPath);
         System.out.println("End");
     }
 
-    private static void mergeFiles(List<File> files, String outFilePath) throws Exception {
+    private static String mergeFiles(List<File> files, String outDirPath) throws Exception {
         Objects.requireNonNull(files, "Files list shouldn't be null");
-        Objects.requireNonNull(outFilePath, "Output file shouldn't be null");
+        Objects.requireNonNull(outDirPath, "Output directory shouldn't be null");
         if (files.isEmpty())
             throw new IllegalArgumentException("PDF files list is empty");
         showFilesPaths(files);
-        File outputFile = new File(outFilePath);
-        if (!outFilePath.toLowerCase().endsWith(".pdf"))
-            throw new IllegalArgumentException("Output file should ends with .pdf");
-        if (!outputFile.getParentFile().exists())
-            throw new IllegalArgumentException("The parent directory of the output file doesn't exists.");
-        mergeFilesHelper(files, outputFile);
+        File outputFile = new File(outDirPath);
+        if (!outputFile.exists() || !outputFile.isDirectory())
+            throw new IllegalArgumentException("The output directory doesn't exists.");
+        return mergeFilesHelper(files, new File(outputFile, UUID.randomUUID().toString() + ".pdf"));
     }
 
-    private static void mergeFilesHelper(List<File> files, File outputFile) throws Exception {
+    private static String mergeFilesHelper(List<File> files, File outputFile) throws Exception {
         OutputStream out = new FileOutputStream(outputFile);
         Document doc = new Document(PageSize.A4);
         PdfCopy writer = new PdfCopy(doc, out);
@@ -89,8 +86,13 @@ public class Main {
             }
         }
 
-        writer.close();
-
+        try {
+            writer.close();
+        } catch (Exception ignored) {
+        }
+        String res = outputFile.getAbsolutePath();
+        System.out.println("File saved to : " + res);
+        return res;
     }
 
     private static void showFilesPaths(List<File> files) {
