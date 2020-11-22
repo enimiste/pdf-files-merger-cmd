@@ -21,5 +21,14 @@ private static void showHelp() {
     }
 ```
 
+## Todo
+Use the JCommander library to process command line options instead of `args` array.
+```
+<dependency>
+  <groupId>com.beust</groupId>
+  <artifactId>jcommander</artifactId>
+  <version>1.71</version>
+</dependency>
+```
 ## Credits
 Enimiste
