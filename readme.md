@@ -30,5 +30,13 @@ Use the JCommander library to process command line options instead of `args` arr
   <version>1.71</version>
 </dependency>
 ```
+or this one 
+```
+<dependency>
+    <groupId>io.airlift</groupId>
+    <artifactId>airline</artifactId>
+    <version>0.8</version>
+</dependency>
+```
 ## Credits
 Enimiste
