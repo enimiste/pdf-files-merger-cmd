@@ -12,8 +12,9 @@ public class FileHelper {
 	 * @return
 	 */
 	public static boolean hasOneOfExtensions(File file, String... exts) {
+		String filePath = file.toPath().toString().toLowerCase();
 		for (String ext : exts) {
-			if (file.toPath().toString().toLowerCase().endsWith("." + ext))
+			if (filePath.endsWith("." + ext))
 				return true;
 		}
 		return false;
